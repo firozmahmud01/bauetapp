@@ -30,6 +30,7 @@ import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class FrontImageUpload extends AppCompatActivity {
 
 
 
-    float prevdata[]=null;
+    float facedata[]=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,15 +84,15 @@ public class FrontImageUpload extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(in,"Take photo via:"),101);
             }
         });
-        findViewById(R.id.front_image_upload_choose_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent in=new Intent(Intent.ACTION_PICK);
-                in.setType("image/*");
-                pd.show();
-                startActivityForResult(Intent.createChooser(in,"Pick via:"),102);
-            }
-        });
+//        findViewById(R.id.front_image_upload_choose_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent in=new Intent(Intent.ACTION_PICK);
+//                in.setType("image/*");
+//                pd.show();
+//                startActivityForResult(Intent.createChooser(in,"Pick via:"),102);
+//            }
+//        });
 
     }
 
@@ -105,15 +106,17 @@ public class FrontImageUpload extends AppCompatActivity {
         if(requestCode==101){
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
-        }else if(requestCode==102){
-            try {
-                bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),data.getData());
-                iv.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                
-            }
+//        }else if(requestCode==102){
+//            try {
+//                bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),data.getData());
+//            } catch (IOException e) {
+//
+//            }
 
+        }else{
+            return ;
         }
+                iv.setImageBitmap(bitmap);
         FaceDetectorOptions f =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -130,29 +133,21 @@ public class FrontImageUpload extends AppCompatActivity {
                             Toast.makeText(FrontImageUpload.this, "No face found", Toast.LENGTH_SHORT).show();
                             return;
                         }
-//                                if(list.size()!=1) {
-//                                    Toast.makeText(FrontImageUpload.this, "Only one face should be in your picture", Toast.LENGTH_SHORT).show();
-//                                    return;
-//                                }
+                        if(list.size()!=1) {
+                            Toast.makeText(FrontImageUpload.this, "Only one face should be in your picture", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Face f=list.get(0);
                         Bitmap bit=FaceRecogniger.cropbit(bitmap,f.getBoundingBox());
                         iv.setImageBitmap(bit);
                         try {
                             FaceRecogniger fd = new FaceRecogniger(FrontImageUpload.this.getAssets());
-                            if(prevdata==null) {
-                                prevdata = fd.getimagedata(bit);
-                            }else{
-                                float newdata[]=fd.getimagedata(bit);
-                                float dis=fd.caldis(newdata,prevdata);
-                                tv.setText(""+dis);
-                                prevdata=newdata;
-
-                            }
-
+                            facedata = fd.getimagedata(bit);
+                            bit.compress(Bitmap.CompressFormat.JPEG,100,new FileOutputStream(file));
+                            upload.setVisibility(View.VISIBLE);
                         }catch (Exception e) {
-                            e.printStackTrace();
+
                         }
-                        upload.setVisibility(View.VISIBLE);
                     }else{
                         Toast.makeText(FrontImageUpload.this, "No face detected.", Toast.LENGTH_SHORT).show();
                     }
