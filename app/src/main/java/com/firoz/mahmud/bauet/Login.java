@@ -45,6 +45,7 @@ public class Login extends AppCompatActivity {
         findViewById(R.id.login_signup_textview).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //signupdis take dissition where to go in signup
                 startActivity(new Intent(Login.this,SignupDIs.class));
             }
         });

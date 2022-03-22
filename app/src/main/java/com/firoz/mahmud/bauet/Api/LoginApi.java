@@ -108,6 +108,9 @@ public class LoginApi {
         }
 
     }
+    public void uploadFace(String image,float facecode[])throws Exception{
+
+    }
     public String getToken(boolean tmp){
         return tmp?sp.getString(MKeys.sp.tmptoken,""):sp.getString(MKeys.sp.mainauthtoken,"");
     }

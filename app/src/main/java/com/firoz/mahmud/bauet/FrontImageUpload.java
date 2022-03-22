@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firoz.mahmud.bauet.Api.LoginApi;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.vision.common.InputImage;
@@ -29,6 +31,7 @@ import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,6 +42,7 @@ public class FrontImageUpload extends AppCompatActivity {
     Bitmap b=null;
     Bitmap bitmap;
     File file;
+    ByteArrayOutputStream bos;
     Button upload;
     TextView tv;
     ProgressDialog pd;
@@ -52,6 +56,7 @@ public class FrontImageUpload extends AppCompatActivity {
         setContentView(R.layout.activity_front_image_upload);
         pd=new ProgressDialog(FrontImageUpload.this);
         pd.setCancelable(false);
+        bos=new ByteArrayOutputStream();
         iv=findViewById(R.id.front_image_upload_imageview);
         upload=findViewById(R.id.front_image_upload_button);
         tv=findViewById(R.id.front_image_upload_text_view);
@@ -68,7 +73,18 @@ public class FrontImageUpload extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(facedata==null){
+                    Toast.makeText(FrontImageUpload.this, "You have to take your face photo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //bos variable is the image variable
 
+                try {
+                    String image = Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
+                    LoginApi log = new LoginApi(FrontImageUpload.this);
+                    log.uploadFace(image, facedata);
+
+                }catch (Exception e){}
             }
         });
 
@@ -84,15 +100,6 @@ public class FrontImageUpload extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(in,"Take photo via:"),101);
             }
         });
-//        findViewById(R.id.front_image_upload_choose_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent in=new Intent(Intent.ACTION_PICK);
-//                in.setType("image/*");
-//                pd.show();
-//                startActivityForResult(Intent.createChooser(in,"Pick via:"),102);
-//            }
-//        });
 
     }
 
@@ -103,19 +110,11 @@ public class FrontImageUpload extends AppCompatActivity {
             pd.dismiss();
             return;
         }
-        if(requestCode==101){
+        if(requestCode!=101)return;
             bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
 
-//        }else if(requestCode==102){
-//            try {
-//                bitmap= MediaStore.Images.Media.getBitmap(getContentResolver(),data.getData());
-//            } catch (IOException e) {
-//
-//            }
 
-        }else{
-            return ;
-        }
+
                 iv.setImageBitmap(bitmap);
         FaceDetectorOptions f =
                 new FaceDetectorOptions.Builder()
@@ -123,6 +122,7 @@ public class FrontImageUpload extends AppCompatActivity {
                         .build();
         try {
             InputImage image = InputImage.fromBitmap(bitmap,0);
+            //can detect face but cann't recognige;
             FaceDetection.getClient(f).process(image).addOnCompleteListener(new OnCompleteListener<List<Face>>() {
                 @Override
                 public void onComplete(@NonNull Task<List<Face>> task) {
@@ -141,9 +141,11 @@ public class FrontImageUpload extends AppCompatActivity {
                         Bitmap bit=FaceRecogniger.cropbit(bitmap,f.getBoundingBox());
                         iv.setImageBitmap(bit);
                         try {
+                            //Facerecgniger class made by firoz can genarate float array.....
                             FaceRecogniger fd = new FaceRecogniger(FrontImageUpload.this.getAssets());
                             facedata = fd.getimagedata(bit);
-                            bit.compress(Bitmap.CompressFormat.JPEG,100,new FileOutputStream(file));
+                            //setting into bit croped image by Facedetection rect
+                            bit.compress(Bitmap.CompressFormat.JPEG,100,bos);
                             upload.setVisibility(View.VISIBLE);
                         }catch (Exception e) {
 

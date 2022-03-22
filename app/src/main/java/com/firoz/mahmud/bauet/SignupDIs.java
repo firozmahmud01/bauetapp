@@ -20,10 +20,8 @@ public class SignupDIs extends AppCompatActivity {
         }else if(pos.equals("1st")){
             startActivity(new Intent(SignupDIs.this,VerificationCode.class));
         }else if(pos.equals("2nd")){
-//            TODO: need to start 2nd activity
+            startActivity(new Intent(SignupDIs.this,FrontImageUpload.class));
         }
-
-
 
             finish();
     }
