@@ -44,4 +44,48 @@
         app:layout_constraintStart_toStartOf="@+id/front_image_upload_take_button"
         app:layout_constraintTop_toBottomOf="@+id/front_image_upload_take_button" />
 
+    <EditText
+        android:id="@+id/front_image_name_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/front_image_id_edittext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/front_image_id_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="ID"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/front_image_upload_batch_edittext"
+        app:layout_constraintEnd_toEndOf="@+id/front_image_name_edittext"
+        app:layout_constraintStart_toStartOf="@+id/front_image_name_edittext" />
+
+    <EditText
+        android:id="@+id/front_image_upload_batch_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Batch"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/frontmageupload_department_edittext"
+        app:layout_constraintEnd_toEndOf="@+id/front_image_id_edittext"
+        app:layout_constraintStart_toStartOf="@+id/front_image_id_edittext" />
+
+    <EditText
+        android:id="@+id/frontmageupload_department_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Department"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/front_image_upload_batch_edittext"
+        app:layout_constraintStart_toStartOf="@+id/front_image_upload_batch_edittext" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

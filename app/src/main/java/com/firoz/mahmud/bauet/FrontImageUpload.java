@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.firoz.mahmud.bauet.Api.LoginApi;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
@@ -47,13 +50,14 @@ public class FrontImageUpload extends AppCompatActivity {
     TextView tv;
     ProgressDialog pd;
 
-
+DatabaseReference dr;
 
     float facedata[]=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_front_image_upload);
+        dr= FirebaseDatabase.getInstance().getReference("Students");
         pd=new ProgressDialog(FrontImageUpload.this);
         pd.setCancelable(false);
         bos=new ByteArrayOutputStream();
@@ -79,12 +83,52 @@ public class FrontImageUpload extends AppCompatActivity {
                 }
                 //bos variable is the image variable
 
-                try {
-                    String image = Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
-                    LoginApi log = new LoginApi(FrontImageUpload.this);
-                    log.uploadFace(image, facedata);
+//                try {
+//                    String image = Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT);
+//                    LoginApi log = new LoginApi(FrontImageUpload.this);
+//                    log.uploadFace(image, facedata);
+//
+//                }catch (Exception e){}
+//                facedata
+                EditText name,id,department,batch;
+                name=findViewById(R.id.front_image_name_edittext);
+                id=findViewById(R.id.front_image_id_edittext);
+                department=findViewById(R.id.frontmageupload_department_edittext);
+                batch=findViewById(R.id.front_image_upload_batch_edittext);
+                if(name.getText().toString().isEmpty()){
+                    name.setError("Fill it");
+                    return ;
+                }
+                if(id.getText().toString().isEmpty()){
+                    id.setError("Fill it");
+                    return ;
+                }
+                if(department.getText().toString().isEmpty()){
+                    department.setError("Fill it");
+                    return ;
+                }
+                if(batch.getText().toString().isEmpty()){
+                    batch.setError("Fill it");
+                    return ;
+                }
 
-                }catch (Exception e){}
+                StudentItem si=new StudentItem(id.getText().toString(),name.getText().toString(),batch.getText().toString(),department.getText().toString(),facedata);
+                dr.push().setValue(si).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            finish();
+                        }else{
+                            Toast.makeText(FrontImageUpload.this, "Failed to upload", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
+
+
+
+
             }
         });
 

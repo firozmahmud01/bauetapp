@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,8 +28,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
@@ -53,15 +57,65 @@ public class Attandace extends Fragment {
     File file;
     TextView tv;
     ProgressDialog pd;
+    ListView studentview;
     ArrayList<Bitmap> faces;
-    DatabaseReference dr= FirebaseDatabase.getInstance().getReference("Students");
+    DatabaseReference dr;
+    ArrayList<StudentItem> si;
     Thread th=null;
+    BaseAdapter ba;
+    ProgressDialog loading;
+    ArrayList<StudentItem>present;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_attandace, container, false);
         next=view.findViewById(R.id.attandace_next_button);
         pd=new ProgressDialog(home);
+        loading=new ProgressDialog(home);
+        loading.setMessage("Please wait.Loading...");
+        loading.setCancelable(false);
+        loading.show();
+        si=new ArrayList<>();
+        present=new ArrayList<>();
+        studentview=view.findViewById(R.id.attandance_student_view_listview);
+        ba=new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return present.size();
+            }
+
+            @Override
+            public Object getItem(int i) {
+                return null;
+            }
+
+            @Override
+            public long getItemId(int i) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int i, View v, ViewGroup viewGroup) {
+                if(v==null){
+                    v=getLayoutInflater().inflate(R.layout.studentitem,null);
+                }
+                TextView name,id,batch,department;
+                name=v.findViewById(R.id.studentitem_name_textview);
+                id=v.findViewById(R.id.studentitem_student_id_textview);
+                batch=v.findViewById(R.id.studentitem_batch_textview);
+                department=v.findViewById(R.id.studentitem_department_textivew);
+                name.setText(present.get(i).getName());
+                id.setText(present.get(i).getId());
+                batch.setText(present.get(i).getBatch());
+                department.setText(present.get(i).getDepartment());
+
+                return v;
+            }
+        };
+        studentview.setAdapter(ba);
+
+        dr=FirebaseDatabase.getInstance().getReference("Students");
+
         tv=view.findViewById(R.id.attandance_student_number_textview);
         tv.setText("");
 
@@ -86,8 +140,31 @@ public class Attandace extends Fragment {
                         @Override
                         public void run() {
                             ArrayList<float[]> b=new ArrayList<>();
+                            present=new ArrayList<>();
+                            for(Bitmap bi:faces) {
+                                try {
+                                    //Facerecgniger class made by firoz can genarate float array.....
+                                    FaceRecogniger fd = new FaceRecogniger(home.getAssets());
+                                    float by[] = fd.getimagedata(bi);
+                                    StudentItem s=si.get(0);
+                                    double dis=fd.caldis(by,s.getFace());
+                                    double min=dis;
+                                    int ind=0;
+                                    for(int i=1;i<si.size();i++){
+                                        s=si.get(i);
+                                        dis=fd.caldis(by,s.getFace());
+                                        if(dis<min){
+                                            min=dis;
+                                            ind=i;
+                                        }
+                                    }
+                                    present.add(si.get(ind));
 
+                                } catch (Exception e) {
 
+                                }
+                            }
+                            ba.notifyDataSetChanged();
 
 
                         }
@@ -99,6 +176,15 @@ public class Attandace extends Fragment {
 
             }
         });
+        view.findViewById(R.id.attandance_capture_image_button).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                home.startActivity(new Intent(home,AddStudenttmp.class));
+
+
+                return true;
+            }
+        });
         view.findViewById(R.id.attandance_capture_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,6 +193,23 @@ public class Attandace extends Fragment {
                 in.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 pd.show();
                 home.startActivityForResult(Intent.createChooser(in,"Take photo via:"),101);
+            }
+        });
+
+        dr.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot ds) {
+                si=new ArrayList<>();
+                for(DataSnapshot d:ds.getChildren() ){
+                    StudentItem s=d.getValue(StudentItem.class);
+                    si.add(s);
+                }
+                loading.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.firoz.mahmud.bauet">
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,6 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BAUET">
+        <activity
+            android:name=".AddStudenttmp"
+            android:exported="false" />
         <activity
             android:name=".FrontImageUpload"
             android:exported="false" />
@@ -36,6 +43,7 @@
         <activity
             android:name=".Login"
             android:exported="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.firoz.mahmud.bauet"
@@ -43,8 +51,9 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/somethingaboutxml"></meta-data>
+                android:resource="@xml/somethingaboutxml" />
         </provider>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

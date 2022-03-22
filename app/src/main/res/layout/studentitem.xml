@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/studentitem_name_textview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/studentitem_student_id_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toStartOf="@+id/studentitem_batch_textview"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentitem_name_textview" />
+
+    <TextView
+        android:id="@+id/studentitem_present_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Present"
+        android:textColor="@android:color/holo_green_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentitem_student_id_textview" />
+
+    <TextView
+        android:id="@+id/studentitem_batch_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/studentitem_student_id_textview"
+        app:layout_constraintEnd_toStartOf="@+id/studentitem_department_textivew"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/studentitem_student_id_textview"
+        app:layout_constraintTop_toTopOf="@+id/studentitem_student_id_textview" />
+
+    <TextView
+        android:id="@+id/studentitem_department_textivew"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/studentitem_batch_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/studentitem_batch_textview"
+        app:layout_constraintTop_toTopOf="@+id/studentitem_batch_textview" />
+</androidx.constraintlayout.widget.ConstraintLayout>
