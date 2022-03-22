@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -14,11 +15,13 @@ import com.google.android.material.tabs.TabLayout;
 
 public class Home extends AppCompatActivity {
     ViewPager page;
+    Attandace at;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         page=findViewById(R.id.homeviewpager);
+        at=new Attandace(this);
         page.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Nullable
             @Override
@@ -38,7 +41,7 @@ public class Home extends AppCompatActivity {
             public Fragment getItem(int position) {
                 switch (position){
                     case 0:
-                        return new Attandace();
+                        return at;
                     case 1:
                         return new StudentID();
                 }
@@ -56,9 +59,11 @@ public class Home extends AppCompatActivity {
     }
 
 
-
-
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        at.onActivity(resultCode,requestCode,data);
+    }
 
     boolean is1st=false;
     @Override
