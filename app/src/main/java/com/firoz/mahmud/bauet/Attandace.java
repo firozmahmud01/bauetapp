@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,13 +65,22 @@ public class Attandace extends Fragment {
     Thread th=null;
     BaseAdapter ba;
     ProgressDialog loading;
+    Handler h;
     ArrayList<StudentItem>present;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.fragment_attandace, container, false);
+        h=new Handler();
+        try {
+            FirebaseDatabase fb=FirebaseDatabase.getInstance();
+            fb.setPersistenceEnabled(true);
+            fb.setPersistenceCacheSizeBytes(1024*100);
+        }catch (Exception e){}
         next=view.findViewById(R.id.attandace_next_button);
         pd=new ProgressDialog(home);
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
         loading=new ProgressDialog(home);
         loading.setMessage("Please wait.Loading...");
         loading.setCancelable(false);
@@ -86,12 +96,12 @@ public class Attandace extends Fragment {
 
             @Override
             public Object getItem(int i) {
-                return null;
+                return i;
             }
 
             @Override
             public long getItemId(int i) {
-                return 0;
+                return i;
             }
 
             @Override
@@ -147,16 +157,19 @@ public class Attandace extends Fragment {
                                     FaceRecogniger fd = new FaceRecogniger(home.getAssets());
                                     float by[] = fd.getimagedata(bi);
                                     StudentItem s=si.get(0);
-                                    double dis=fd.caldis(by,s.getFace());
+                                    double dis=fd.caldis(by,FrontImageUpload.getFaceinf(s.getFace()));
                                     double min=dis;
                                     int ind=0;
                                     for(int i=1;i<si.size();i++){
                                         s=si.get(i);
-                                        dis=fd.caldis(by,s.getFace());
+                                        dis=fd.caldis(by,FrontImageUpload.getFaceinf(s.getFace()));
                                         if(dis<min){
                                             min=dis;
                                             ind=i;
                                         }
+                                    }
+                                    if(min>1){
+                                        continue;
                                     }
                                     present.add(si.get(ind));
 
@@ -164,7 +177,12 @@ public class Attandace extends Fragment {
 
                                 }
                             }
-                            ba.notifyDataSetChanged();
+                            h.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ba.notifyDataSetChanged();
+                                }
+                            });
 
 
                         }
@@ -195,7 +213,7 @@ public class Attandace extends Fragment {
                 home.startActivityForResult(Intent.createChooser(in,"Take photo via:"),101);
             }
         });
-
+        dr.keepSynced(true);
         dr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot ds) {
@@ -226,7 +244,7 @@ public class Attandace extends Fragment {
         }
         if(requestCode!=101)return;
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-        iv.setImageBitmap(bitmap);
+//        iv.setImageBitmap(bitmap);
         FaceDetectorOptions f =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)

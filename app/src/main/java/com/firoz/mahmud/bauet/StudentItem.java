@@ -1,13 +1,15 @@
 package com.firoz.mahmud.bauet;
 
+import java.util.ArrayList;
+
 public class StudentItem {
     public StudentItem(){
 
     }
     private String id,name,batch,department;
-    private float face[];
+    private String face;
 
-    public StudentItem(String id, String name, String batch, String department, float[] face) {
+    public StudentItem(String id, String name, String batch, String department, String face) {
         this.id = id;
         this.name = name;
         this.batch = batch;
@@ -47,11 +49,11 @@ public class StudentItem {
         this.department = department;
     }
 
-    public float[] getFace() {
+    public String getFace() {
         return face;
     }
 
-    public void setFace(float[] face) {
+    public void setFace(String face) {
         this.face = face;
     }
 }

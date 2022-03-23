@@ -16,11 +16,13 @@ import com.google.android.material.tabs.TabLayout;
 public class Home extends AppCompatActivity {
     ViewPager page;
     Attandace at;
+    StudentID si;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         page=findViewById(R.id.homeviewpager);
+        si=new StudentID(this);
         at=new Attandace(this);
         page.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Nullable
@@ -43,7 +45,7 @@ public class Home extends AppCompatActivity {
                     case 0:
                         return at;
                     case 1:
-                        return new StudentID();
+                        return si;
                 }
                 return null;
             }
@@ -63,6 +65,7 @@ public class Home extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         at.onActivity(resultCode,requestCode,data);
+        si.onActivity(resultCode,requestCode,data);
     }
 
     boolean is1st=false;

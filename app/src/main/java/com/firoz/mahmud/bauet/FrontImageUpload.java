@@ -112,7 +112,7 @@ DatabaseReference dr;
                     return ;
                 }
 
-                StudentItem si=new StudentItem(id.getText().toString(),name.getText().toString(),batch.getText().toString(),department.getText().toString(),facedata);
+                StudentItem si=new StudentItem(id.getText().toString(),name.getText().toString(),batch.getText().toString(),department.getText().toString(),facegenarate(facedata));
                 dr.push().setValue(si).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -203,5 +203,22 @@ DatabaseReference dr;
         } catch (Exception e) {
         }
 
+    }
+
+    public static String facegenarate(float[] face){
+        String result="";
+        for(int i=0;i<face.length;i++){
+            result+="/"+Float.toString(face[i]);
+        }
+        result=result.replaceFirst("/","");
+        return result;
+    }
+    public static float[] getFaceinf(String face) {
+        String arr[]=face.split("/");
+        float res[]=new float[arr.length];
+        for(int i=0;i<arr.length;i++){
+            res[i]=Float.valueOf(arr[i]);
+        }
+        return res;
     }
 }
