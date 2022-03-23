@@ -80,6 +80,7 @@ public class Attandace extends Fragment {
         next=view.findViewById(R.id.attandace_next_button);
         pd=new ProgressDialog(home);
         pd.setMessage("Please wait...");
+        iv=view.findViewById(R.id.attandance_show_imageview);
         pd.setCancelable(false);
         loading=new ProgressDialog(home);
         loading.setMessage("Please wait.Loading...");
@@ -181,6 +182,7 @@ public class Attandace extends Fragment {
                                 @Override
                                 public void run() {
                                     ba.notifyDataSetChanged();
+                                    th=null;
                                 }
                             });
 
@@ -194,15 +196,7 @@ public class Attandace extends Fragment {
 
             }
         });
-        view.findViewById(R.id.attandance_capture_image_button).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                home.startActivity(new Intent(home,FrontImageUpload.class));
 
-
-                return true;
-            }
-        });
         view.findViewById(R.id.attandance_capture_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -244,7 +238,7 @@ public class Attandace extends Fragment {
         }
         if(requestCode!=101)return;
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//        iv.setImageBitmap(bitmap);
+        iv.setImageBitmap(bitmap);
         FaceDetectorOptions f =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -267,7 +261,7 @@ public class Attandace extends Fragment {
                             Bitmap bit=FaceRecogniger.cropbit(bitmap,face.getBoundingBox());
                             faces.add(bit);
                         }
-
+                        tv.setText(list.size()+" faces found.");
 
                         pd.dismiss();
                     }

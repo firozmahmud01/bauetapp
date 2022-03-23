@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:keepScreenOn="true"
     tools:context=".StudentID">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -11,13 +12,34 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/student_id_show_imageview"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
             android:src="@drawable/selfi"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/student_id_next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@+id/student_id_capture_image_button"
+            app:layout_constraintStart_toStartOf="@+id/student_id_capture_image_button"
+            app:layout_constraintTop_toBottomOf="@+id/student_id_capture_image_button" />
+
+        <Button
+            android:id="@+id/student_id_capture_image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Capture Image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/student_id_show_imageview" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

@@ -56,30 +56,28 @@ public class StudentID extends Fragment {
     ImageView iv;
     Button next;
     File file;
-    TextView tv;
     ProgressDialog pd;
-    ListView studentview;
     ArrayList<Bitmap> faces;
     DatabaseReference dr;
     ArrayList<StudentItem> si;
     Thread th=null;
-    BaseAdapter ba;
     ProgressDialog loading;
     Handler h;
     ArrayList<StudentItem>present;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.fragment_attandace, container, false);
+        View view= inflater.inflate(R.layout.fragment_student_i_d, container, false);
         h=new Handler();
         try {
             FirebaseDatabase fb=FirebaseDatabase.getInstance();
             fb.setPersistenceEnabled(true);
             fb.setPersistenceCacheSizeBytes(1024*100);
         }catch (Exception e){}
-        next=view.findViewById(R.id.attandace_next_button);
+        next=view.findViewById(R.id.student_id_next_button);
         pd=new ProgressDialog(home);
         pd.setMessage("Please wait...");
+        iv=view.findViewById(R.id.student_id_show_imageview);
         pd.setCancelable(false);
         loading=new ProgressDialog(home);
         loading.setMessage("Please wait.Loading...");
@@ -87,47 +85,11 @@ public class StudentID extends Fragment {
         loading.show();
         si=new ArrayList<>();
         present=new ArrayList<>();
-        studentview=view.findViewById(R.id.attandance_student_view_listview);
-        ba=new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return present.size();
-            }
 
-            @Override
-            public Object getItem(int i) {
-                return i;
-            }
-
-            @Override
-            public long getItemId(int i) {
-                return i;
-            }
-
-            @Override
-            public View getView(int i, View v, ViewGroup viewGroup) {
-                if(v==null){
-                    v=getLayoutInflater().inflate(R.layout.studentitem,null);
-                }
-                TextView name,id,batch,department;
-                name=v.findViewById(R.id.studentitem_name_textview);
-                id=v.findViewById(R.id.studentitem_student_id_textview);
-                batch=v.findViewById(R.id.studentitem_batch_textview);
-                department=v.findViewById(R.id.studentitem_department_textivew);
-                name.setText(present.get(i).getName());
-                id.setText(present.get(i).getId());
-                batch.setText(present.get(i).getBatch());
-                department.setText(present.get(i).getDepartment());
-
-                return v;
-            }
-        };
-        studentview.setAdapter(ba);
 
         dr=FirebaseDatabase.getInstance().getReference("Students");
 
-        tv=view.findViewById(R.id.attandance_student_number_textview);
-        tv.setText("");
+
 
         faces=new ArrayList<>();
         file=new File(home.getExternalFilesDir(Environment.DIRECTORY_PICTURES),"image.jpg");
@@ -177,7 +139,15 @@ public class StudentID extends Fragment {
                             h.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ba.notifyDataSetChanged();
+                                    if(present.size()==1){
+                                        Intent inte=new Intent(home,StudentView.class);
+                                        inte.putExtra("id",present.get(0).getId());
+                                        inte.putExtra("name",present.get(0).getName());
+                                        inte.putExtra("batch",present.get(0).getBatch());
+                                        inte.putExtra("department",present.get(0).getDepartment());
+                                        startActivity(inte);
+                                        th=null;
+                                    }
                                 }
                             });
 
@@ -191,16 +161,8 @@ public class StudentID extends Fragment {
 
             }
         });
-        view.findViewById(R.id.attandance_capture_image_button).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                home.startActivity(new Intent(home,FrontImageUpload.class));
 
-
-                return true;
-            }
-        });
-        view.findViewById(R.id.attandance_capture_image_button).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.student_id_capture_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent in=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -241,7 +203,10 @@ public class StudentID extends Fragment {
         }
         if(requestCode!=102)return;
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-//        iv.setImageBitmap(bitmap);
+
+            iv.setImageBitmap(bitmap);
+
+
         FaceDetectorOptions f =
                 new FaceDetectorOptions.Builder()
                         .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
@@ -254,8 +219,8 @@ public class StudentID extends Fragment {
                 public void onComplete(@NonNull Task<List<Face>> task) {
                     if(task.isSuccessful()) {
                         List<Face> list = task.getResult();
-                        if (list.size() <= 0) {
-                            Toast.makeText(home, "No face found.", Toast.LENGTH_SHORT).show();
+                        if (list.size()!=1) {
+                            Toast.makeText(home, "Only one face need.", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         next.setVisibility(View.VISIBLE);

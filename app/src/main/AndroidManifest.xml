@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BAUET">
         <activity
+            android:name=".StudentView"
+            android:exported="false" />
+        <activity
             android:name=".AddStudenttmp"
             android:exported="false" />
         <activity
