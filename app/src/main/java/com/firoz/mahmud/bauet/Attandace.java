@@ -196,7 +196,13 @@ public class Attandace extends Fragment {
 
             }
         });
-
+        view.findViewById(R.id.attandance_capture_image_button).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                startActivity(new Intent(home,FrontImageUpload.class));
+                return true;
+            }
+        });
         view.findViewById(R.id.attandance_capture_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
