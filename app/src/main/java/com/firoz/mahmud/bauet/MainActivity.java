@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firoz.mahmud.bauet.Api.LoginApi;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
     SharedPreferences sp;
@@ -69,20 +70,25 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startSomething(){
-        sp=getSharedPreferences(MKeys.sp.database,MODE_PRIVATE);
-        //mainauthtoken will be available after login
-        if(sp.getString(MKeys.sp.mainauthtoken,"").isEmpty()){
-            LoginApi log=new LoginApi(this);
-            //getposition will return string to recode where left in signup
-            String pos=log.getPosition();
-            if(pos.isEmpty()) {
-                startActivity(new Intent(MainActivity.this, Login.class));
-            }else{
-                startActivity(new Intent(MainActivity.this,SignupDIs.class));
-            }
+        if(FirebaseAuth.getInstance().getCurrentUser()==null){
+            startActivity(new Intent(MainActivity.this,Login.class));
         }else{
             startActivity(new Intent(MainActivity.this,Home.class));
         }
+//        sp=getSharedPreferences(MKeys.sp.database,MODE_PRIVATE);
+//        //mainauthtoken will be available after login
+//        if(sp.getString(MKeys.sp.mainauthtoken,"").isEmpty()){
+//            LoginApi log=new LoginApi(this);
+//            //getposition will return string to recode where left in signup
+//            String pos=log.getPosition();
+//            if(pos.isEmpty()) {
+//                startActivity(new Intent(MainActivity.this, Login.class));
+//            }else{
+//                startActivity(new Intent(MainActivity.this,SignupDIs.class));
+//            }
+//        }else{
+//            startActivity(new Intent(MainActivity.this,Home.class));
+//        }
         overridePendingTransition(R.anim.fadein,R.anim.fadeout);
     }
 }

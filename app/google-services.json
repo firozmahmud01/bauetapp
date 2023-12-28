@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "1095529326281",
-    "project_id": "bauet-437e9",
-    "storage_bucket": "bauet-437e9.appspot.com"
+    "project_number": "552159151494",
+    "project_id": "facebauet",
+    "storage_bucket": "facebauet.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1095529326281:android:38a458122dfb98101acf18",
+        "mobilesdk_app_id": "1:552159151494:android:354c7844570595bf265807",
         "android_client_info": {
           "package_name": "com.firoz.mahmud.bauet"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1095529326281-kjmqho8bs5r74i566fn2ecqa3nkp19vu.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA4ZtPj_fWHOXCUarFd9hZqEcyg1lnJplE"
+          "current_key": "AIzaSyAEnK4syBm2Wo9V5NHO5gwBEtRtuzIyB68"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1095529326281-kjmqho8bs5r74i566fn2ecqa3nkp19vu.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
